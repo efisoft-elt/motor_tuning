@@ -26,14 +26,18 @@ Configurating the Mode
 
 To have our EL7342 working as a velocity control loop, we have to setup some parameters in the Process Data and the CoE Online. Left click on the right Terminal EL7342 (if you have multiple), and go in the Process Data window.
 
-.. image:: img/mode_config.png
+.. figure:: img/mode_config.png
    :width: 600
+
+   Needed Process Data are automaticaly chosen when selecting Velocity control compact with info data
 
 In the Predefined PDO Assignment, select the Velocity control compact with info data. It will turn on all the PDO assignment needed for velocity control  plus the PDO needed for the info data which can be assigned, for instance, to the curent command.
 
 
-.. image:: img/pdo_assign.png
-   :width: 600
+.. figure:: img/pdo_assign.png
+   :width: 600    
+   
+   Operation Mode shall be automatic (will follow the PDO assignment)  
 
 In the CoE Online window, look for the Operation mode located in either 8022:01 register if you are using the Channel 1, or 8032:01 if you use the Channel 2. Set the mode to Automatic. In this mode, the EL7342 will automatically be set to the Velocity Control Compact with info data that has been set in the process data.
 Activate the new configuration with |activate|  
@@ -56,8 +60,10 @@ To tune our motor, we will be using the Ziegler-Nichols method. In the CoE Onlin
 The Ziegler-Nichols method's first step is to find the gain Kp ultimate to which the motor is no longer stable, and start oscillating. 
 Increase the Kp factor, **to update the changes, disable and enable again the controller on the NC panel.**
 
-.. image:: img/nc_startup.png
+.. figure:: img/nc_startup.png
     :width: 600
+
+    Enable and Disable control in order to update changes in CoE Online assignment. (it might be a better way ?) 
 
 .. warning:: 
 
@@ -68,16 +74,19 @@ Increase the Kp factor, **to update the changes, disable and enable again the co
 Once the changes are updated, go in the function panel :
 
 
-.. image:: img/function_pan.png
+.. figure:: img/function_pan.png
     :width: 600
+    
+    The Velo step Sequence is necessary to bypass the NC position control loop   
 
 Use the Velo Step Sequence function to send velocity commands to the motor. **This function is the only way to send a Velocity command directly to the module velocity control loop.  Other functions go through the position control loop of the NC and thus, will change the gain Kp ultimate.**
 
 The velocity command is sent to the EL7342 through a 16 bits integer (with one bit for the sign). The NC task is using the reference velocity parameter to scale the input velocity (in user units) to the 16 bits velocity command :
-e.g. if the reference velocity is 2 mm/s and a command of 1mm/2 is triggered, the NC task will send a command of  $2^15/2 = 16384$ . 
+e.g. if the reference velocity is 2 mm/s and a command of 1mm/s is triggered, the NC task will send a command of  :math:`2^{15}/2 = 16384` . 
 
 Create a YT chart to display both the actual velocity and the set velocity to visualize your motor's behavior.
 
+.. _scope_vel:
 .. figure:: img/scope1.png
     :width: 700
 
@@ -113,16 +122,18 @@ Using the same spreadsheet as previously, we can enter our two Ku and Tu values 
 
 
 .. figure:: img/spreadsheet1.png
-     :width: 700
-
-
+    :width: 700
+    
+    Spreadsheet screenshot
+    
 In our example, the spreadsheet calculates the values above. We will choose to use a PID controller. (the EL7342's PI only controller is not a perfect PI and seems to compensate things around.)
 The Ziegler-Nichols method gives us the following configuration on our velocity control loop :
 
 
 .. figure:: img/dcm_8023_2.png
-     :width: 400
-
+    :width: 400
+    
+    EL7342 Control parameters for this exmemple 
 
 
 And the final tuning results gives the following behavior :
@@ -188,11 +199,15 @@ Once you've finished tuning your motor, you will need to save your configuration
 .. figure:: img/startup_parameters.png
    :width: 700
 
+   Parameters saved in the startup configuration 
+
 In your Terminal EL7342, there is a Startup window that allows you to automatically configurate the registers you want at launch.
 By clicking "New", you can add registers that will be configurated everytime you launch your project into the PLC.
 
 .. figure:: img/startup_param_edit.png
    :width: 700
+
+   Panel to edit startup parameters 
 
 From here, it works as the CoE Online register configuration method previously used. Configure your **DCM Motor Settings** using the **EL7342 Configuration** page of the spreadsheet and apply your same controllers factors to the **DCM Controller Settings 2**. Do not forget to **set the Operation Mode in the DCM Features register to Automatic !**
 
@@ -297,7 +312,9 @@ Enter your motor's characteristics and apply the automatically calculated parame
 
 .. figure:: img/M403_position_tuned.png
    :width: 700
-
+    
+   scope for a Position control loop tuned 
+   
 With a well tuned motor, you should now be able to see it stop precisely around the position command given.
 
 
@@ -314,6 +331,8 @@ It is possible that your motor is having trouble following its position while mo
 
 .. figure:: img/Position_error_while_moving.png
    :width: 700
+
+   scope to illustrate a following error  
 
 **Symptoms :** 
 
@@ -332,6 +351,8 @@ As for bigger motors, finding the ultimate gain Ku can be tricky. As a reminder,
 
 .. figure:: img/Damaging_velocity_spikes.png
    :width: 700
+
+   scope to illustrate unstable posiotn control loop  
 
 **Symptoms :**
 

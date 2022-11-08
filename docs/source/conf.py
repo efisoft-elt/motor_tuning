@@ -46,6 +46,7 @@ extensions = [
     'sphinx_rtd_theme'
 ]
 
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -189,3 +190,6 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
+# Add figure references number 
+numfig = True
