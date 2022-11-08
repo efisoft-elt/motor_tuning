@@ -19,7 +19,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'dc_motor_el7342'
+project = 'Motor Tuning'
 copyright = '2022, Romain Bouche'
 author = 'Romain Bouche'
 

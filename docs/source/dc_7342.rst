@@ -47,6 +47,9 @@ Tuning with Ziegler-Nichols
 To tune our motor, we will be using the Ziegler-Nichols method. In the CoE Online, at the register 8023:0 or 8033:0 depending on the channel used, you will find the Kp, Ki and Kd factor of the velocity control loop. Respectively, 8023:01 8023:02 and 8023:08 (or 8033:01 8033:02 and 8033:08 if channel 2 is used).
 
 .. image:: img/dcm_8023.png
+   :width: 600
+   
+
 
 **Start by setting both Ki and Kd to 0.**
 
@@ -54,6 +57,7 @@ The Ziegler-Nichols method's first step is to find the gain Kp ultimate to which
 Increase the Kp factor, **to update the changes, disable and enable again the controller on the NC panel.**
 
 .. image:: img/nc_startup.png
+    :width: 600
 
 .. warning:: 
 
@@ -65,6 +69,7 @@ Once the changes are updated, go in the function panel :
 
 
 .. image:: img/function_pan.png
+    :width: 600
 
 Use the Velo Step Sequence function to send velocity commands to the motor. **This function is the only way to send a Velocity command directly to the module velocity control loop.  Other functions go through the position control loop of the NC and thus, will change the gain Kp ultimate.**
 
@@ -74,6 +79,7 @@ e.g. if the reference velocity is 2 mm/s and a command of 1mm/2 is triggered, th
 Create a YT chart to display both the actual velocity and the set velocity to visualize your motor's behavior.
 
 .. figure:: img/scope1.png
+    :width: 700
 
     *Actual Velocity* (blue)  and *Set Velocity* (green) in mm/s of an oscillating motor M112-2DG1 on a YT Chart on a Velo Step Sequence function
 
@@ -82,6 +88,7 @@ Using the YT Chart, zoom on the oscillations to measure the oscillation frequenc
 Reminder : Use the zoom tool to zoom on the oscillations and click it once to do an automatic Y zoom !
 
 .. figure:: img/scope2.png
+   :width: 700
 
    Zoomed in  *Actual Velocity* (blue)  and *Set Velocity* (green) in mm/s of an oscillating motor M112-2DG1 on a YT Chart on a Velo Step Sequence function
 
@@ -106,12 +113,16 @@ Using the same spreadsheet as previously, we can enter our two Ku and Tu values 
 
 
 .. figure:: img/spreadsheet1.png
+     :width: 700
+
 
 In our example, the spreadsheet calculates the values above. We will choose to use a PID controller. (the EL7342's PI only controller is not a perfect PI and seems to compensate things around.)
 The Ziegler-Nichols method gives us the following configuration on our velocity control loop :
 
 
 .. figure:: img/dcm_8023_2.png
+     :width: 400
+
 
 
 And the final tuning results gives the following behavior :
@@ -120,7 +131,7 @@ And the final tuning results gives the following behavior :
 
 
 .. figure:: img/result_tuning.png
-
+    :width: 700
     
     *Actual Velocity* (blue) and *Set Velocity* (red) (mm/s) of a correctly tuned motor M112-2DG1 on a YT Chart on a Velo Step Sequence function
 
@@ -135,6 +146,7 @@ A. Small Oscillations
 ~~~~~~~~~~~~~~~~~~~~~
 
 .. figure:: img/small_scillations.png
+   :width: 700
 
    Actual Velocity (blue)  and Set Velocity (red)  (mm/s) of a badly tuned motor M112-2DG1 on a YT Chart on a Velo Step Sequence function
 
@@ -152,7 +164,8 @@ B. Slow Answer
 ~~~~~~~~~~~~~~
 
 .. figure:: img/slow_answer.png
-
+   :width: 700
+   
    Actual Velocity (blue) and Set Velocity (red)  (mm/s) of a badly tuned motor M112-2DG1 on a YT Chart on a Velo Step Sequence function
 
 
@@ -173,15 +186,18 @@ Once you've finished tuning your motor, you will need to save your configuration
 
 
 .. figure:: img/startup_parameters.png
+   :width: 700
 
 In your Terminal EL7342, there is a Startup window that allows you to automatically configurate the registers you want at launch.
 By clicking "New", you can add registers that will be configurated everytime you launch your project into the PLC.
 
 .. figure:: img/startup_param_edit.png
+   :width: 700
 
 From here, it works as the CoE Online register configuration method previously used. Configure your **DCM Motor Settings** using the **EL7342 Configuration** page of the spreadsheet and apply your same controllers factors to the **DCM Controller Settings 2**. Do not forget to **set the Operation Mode in the DCM Features register to Automatic !**
 
 .. figure:: img/startup_param_save.png
+   :width: 700
 
 To save a parameter, select the register, enter its value and click OK. You will need to repeat this process for each registers.
 
@@ -207,6 +223,7 @@ To complete our precision goal, we will be using the Position controller with tw
 
 
 .. figure:: img/controller_choice.png
+   :width: 700
 
 This controller offers us multiple parameters to setup our position control loop.
 
@@ -245,8 +262,9 @@ Contrary to the EL7342, you can update the changes by selecting the factor you w
 **The definition of instability is different on this case**. We will say that our motor becomes unstable when **its actual velocity will have increasing oscillations either while moving or while standing**.
 
 .. figure:: img/pos_instability_1.png
-    
-    Actual Velocity (blue) (mm/s), Actual Position (orange)  (mm) and Position Error (violet) (µm) of an oscillating motor M112-2DG1 on a YT Chart on a Reversing Sequence function
+   :width: 700
+   
+   Actual Velocity (blue) (mm/s), Actual Position (orange)  (mm) and Position Error (violet) (µm) of an oscillating motor M112-2DG1 on a YT Chart on a Reversing Sequence function
 
 
 A motor unstable with oscillations on its speed during movement.
@@ -254,8 +272,9 @@ A motor unstable with oscillations on its speed during movement.
 
 
 .. figure:: img/pos_instability_2.png
+   :width: 700
 
-    Actual Velocity (blue) (mm/s), Actual Position (orange)  (mm) and Position Error (violet) (µm) of an oscillating motor M403-1DG on a YT Chart on a Reversing Sequence function
+   Actual Velocity (blue) (mm/s), Actual Position (orange)  (mm) and Position Error (violet) (µm) of an oscillating motor M403-1DG on a YT Chart on a Reversing Sequence function
 
 A motor unstable with **oscillations on its speed** during standstill.
 
@@ -277,7 +296,7 @@ The next steps will use Y marker to have a better view of what's happening with 
 Enter your motor's characteristics and apply the automatically calculated parameters to your controller. Don't forget to update the changes using the Activating Configuration button |activate|
 
 .. figure:: img/M403_position_tuned.png
-
+   :width: 700
 
 With a well tuned motor, you should now be able to see it stop precisely around the position command given.
 
@@ -294,7 +313,7 @@ A Tracking Improvement
 It is possible that your motor is having trouble following its position while moving. This is not a huge problem and should not affect your motor's precision while standstill, but it can be easily improved.
 
 .. figure:: img/Position_error_while_moving.png
-
+   :width: 700
 
 **Symptoms :** 
 
@@ -312,7 +331,7 @@ It is possible that, with a high ultimate gain Ku chosen, the values of your pos
 As for bigger motors, finding the ultimate gain Ku can be tricky. As a reminder, the instability of your motor starts as soon as its velocity gets unstable !
 
 .. figure:: img/Damaging_velocity_spikes.png
-
+   :width: 700
 
 **Symptoms :**
 
